@@ -6,7 +6,7 @@ from model.transaction import TransactionData
 from datetime import datetime
 from config.config import trx_collection
 import logging
-
+import uvicorn
 logging.config.fileConfig('logging.conf', disable_existing_loggers=False)
 logger = logging.getLogger(__name__)
 
@@ -52,3 +52,6 @@ async def get_transaction():
         "message":"Success get transaction data",
         "content":content
     }
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=7007, reload=True,log_config = None)
