@@ -28,7 +28,7 @@ class TransactionDataDb(TransactionData):
 
 class TransactionDataShow(BaseModel):
     n_data : int = None
-    total_puchase : int = None
+    total_purchase : int = None
     total_income  : int = None
     total_net : int = None
     content :List[TransactionDataDb] = []
