@@ -45,7 +45,7 @@ async def get_transaction():
     data = TransactionDataShow(content = all_trx)
     data.n_data = n_data
     data.total_income = total_income
-    data.total_puchase = total_purchase
+    data.total_purchase = total_purchase
     data.total_net = total_income - total_purchase
 
     return {
