@@ -6,3 +6,4 @@ class TransactionData(BaseModel):
     amount:str
     desc:str
     trxMethod:str
+    trxId:str
