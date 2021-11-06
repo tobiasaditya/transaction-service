@@ -22,6 +22,12 @@ class TransactionData(BaseModel):
     requestTime:datetime = None
     trxId:str = None
 
+class TransactionFilter(BaseModel):
+    startDate:str = None
+    endDate:str = None
+    trxType:str = None
+    trxMethod:str = None
+
 class TransactionDataDb(TransactionData):
     id:ObjectStr = Field(... , alias="_id")
     requestTime : ObjectStr = None
