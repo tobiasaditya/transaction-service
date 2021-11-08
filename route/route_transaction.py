@@ -48,7 +48,7 @@ async def get_transaction(
     if trxType and trxType != trxTypeEnum.ALL:
         filter['trxType'] = trxType
     
-    if trxMethod and trxMethodEnum.ALL:
+    if trxMethod and trxMethod!= trxMethodEnum.ALL:
         filter['trxMethod'] = trxMethod
 
     logger.debug(f"Filter | {filter}")
