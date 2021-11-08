@@ -18,7 +18,7 @@ router_transaction = APIRouter()
 @router_transaction.post("/add",response_model=DefaultResponse)
 async def add_transaction(trx_data:TransactionData):
     request_time = datetime_jakarta()
-    logging.debug(str(request_time))
+    logger.debug(str(request_time))
 
     trx_data.requestTime = request_time
     trx_data.trxId = str(uuid.uuid4())
