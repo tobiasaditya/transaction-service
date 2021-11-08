@@ -10,13 +10,16 @@ from config.config import trx_collection
 
 from util.util_datetime import datetime_jakarta
 import uuid
-
+import logging
+logger = logging.getLogger(__name__)
 
 router_transaction = APIRouter()
 
 @router_transaction.post("/add",response_model=DefaultResponse)
 async def add_transaction(trx_data:TransactionData):
     request_time = datetime_jakarta()
+    logging.debug(str(request_time))
+
     trx_data.requestTime = request_time
     trx_data.trxId = str(uuid.uuid4())
     insert_trx = await trx_collection.insert_one(trx_data.dict())
@@ -48,6 +51,7 @@ async def get_transaction(
     if trxMethod:
         filter['trxMethod'] = trxMethod
 
+    logger.debug(f"Filter | {filter}")
     n_data = await trx_collection.count_documents(filter)
     total_income = 0
     total_purchase = 0
