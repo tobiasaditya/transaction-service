@@ -20,7 +20,7 @@ async def add_transaction(trx_data:TransactionData):
     request_time = datetime_jakarta()
     trx_data.requestTime = request_time
     trx_data.trxId = str(uuid.uuid4())
-    
+
     logger.debug(trx_data.dict())
     insert_trx = await trx_collection.insert_one(trx_data.dict())
     return {
@@ -45,10 +45,10 @@ async def get_transaction(
             "$lt": endDate+timedelta(days=1)
         }
 
-    if trxType:
+    if trxType and trxType != trxTypeEnum.ALL:
         filter['trxType'] = trxType
     
-    if trxMethod:
+    if trxMethod and trxMethodEnum.ALL:
         filter['trxMethod'] = trxMethod
 
     logger.debug(f"Filter | {filter}")
