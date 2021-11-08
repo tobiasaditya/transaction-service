@@ -22,6 +22,7 @@ async def add_transaction(trx_data:TransactionData):
 
     trx_data.requestTime = request_time
     trx_data.trxId = str(uuid.uuid4())
+    logger.debug(trx_data.dict())
     insert_trx = await trx_collection.insert_one(trx_data.dict())
     return {
         "request_time":str(request_time),
