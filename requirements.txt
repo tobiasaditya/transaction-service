@@ -3,3 +3,4 @@ motor
 pyyaml
 uvicorn
 pytz
+python-jose
