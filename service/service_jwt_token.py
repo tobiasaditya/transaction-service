@@ -3,6 +3,8 @@ from jose import JWTError, jwt
 from fastapi import HTTPException, status
 from datetime import datetime, timedelta
 
+from model.model_token import TokenData
+
 # to get a string like this run:
 # openssl rand -hex 32
 SECRET_KEY = "a92f61642b2561b576d066a20d6459d652977d9eaaa9d4b077b3640487b9468f"
@@ -24,13 +26,12 @@ def get_token_data(token:str):
     try:
         #'exp' automatically recognize by jwt, if error, then raise HTTPException
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id = payload.get("id")
-        address = payload.get("address")
+        user_id = payload.get("userId")
         
 
         if user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="Could not validate credentials",headers={"WWW-Authenticate": "Bearer"})
-        token_data = schema.TokenData(id = user_id, address = address)
+        token_data = TokenData(userId = user_id)
         return token_data
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="Invalid token",headers={"WWW-Authenticate": "Bearer"})

@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel
 
 class RegisterUserInput(BaseModel):
@@ -6,5 +7,9 @@ class RegisterUserInput(BaseModel):
     phoneNumber:str
 
 class VerifyUser(RegisterUserInput):
-    otpValue:str
-    otpId:str
+    otpValue:str = None
+    otpId:str = None
+
+class DataUserDb(RegisterUserInput):
+    token:str = None
+    createTime:datetime = None

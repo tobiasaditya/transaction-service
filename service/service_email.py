@@ -5,7 +5,7 @@ import smtplib
 
 
 def fmtp_server(msg):
-    PASSWORD = "qdkpvssijqftpify"
+    PASSWORD = "kniahlbqltehyzez"#"qdkpvssijqftpify"
     EMAIL = "tobias.aditya@gmail.com"
     #create server
     server = smtplib.SMTP('smtp.gmail.com: 587')
@@ -29,7 +29,7 @@ def email(receiver:str,otp:str):
     msg['Subject'] = "Account Activation"
     
     # add in the message body
-    msg.attach(MIMEText(f"OTP = {otp}", 'plain'))
+    msg.attach(MIMEText(f"This is your One Time Password (OTP) {otp}", 'plain'))
 
     # with open(request.attachment, 'rb') as f:
     #     lampiran = f.read()
