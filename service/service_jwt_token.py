@@ -27,13 +27,13 @@ def get_token_data(token:str):
         #'exp' automatically recognize by jwt, if error, then raise HTTPException
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = payload.get("userId")
-        
 
         if user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="Could not validate credentials",headers={"WWW-Authenticate": "Bearer"})
         token_data = TokenData(userId = user_id)
         return token_data
     except jwt.ExpiredSignatureError:
+        return {'needVerify':True}
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="Invalid token",headers={"WWW-Authenticate": "Bearer"})
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="Could not validate credentials",headers={"WWW-Authenticate": "Bearer"})

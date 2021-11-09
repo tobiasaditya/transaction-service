@@ -3,7 +3,7 @@ from model.model_otp import OtpBase
 from model.model_response import DefaultResponseContent
 from model.model_token import TokenData
 
-from model.model_user import DataUserDb, RegisterUserInput, VerifyUser
+from model.model_user import DataUserDb, LoginUser, RegisterUserInput, VerifyUser
 from config.config import user_collection, otp_collection
 from service.service_email import email
 from service.service_jwt_token import create_access_token, get_token_data
@@ -88,7 +88,23 @@ async def verify(data_verify:VerifyUser):
             "status_code":200,
             "message":"Registration success"
         }
+
+@router_auth.post("/login")
+async def login(data_login:LoginUser):
+    found_user = await user_collection.find_one({"phoneNumber":data_login.phoneNumber})
+
+    if not found_user:
+        return {
+            "request_time":str(datetime_jakarta()),
+            "status_code":404,
+            "message":"User not found"
+        }
     
+    access_token = found_user['token']
+
+    #Verify token (if expired)
+    verify_token = get_token_data()
+
 
 
 

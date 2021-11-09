@@ -13,3 +13,6 @@ class VerifyUser(RegisterUserInput):
 class DataUserDb(RegisterUserInput):
     token:str = None
     createTime:datetime = None
+
+class LoginUser(BaseModel):
+    phoneNumber:str
