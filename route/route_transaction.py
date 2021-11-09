@@ -1,12 +1,15 @@
 from datetime import datetime, timedelta
 from typing import Optional
 from fastapi import APIRouter
+from fastapi.param_functions import Depends
 from enum_model.enum_transaction import trxMethodEnum,trxTypeEnum
 
 from model.model_response import DefaultResponse, DefaultResponseContent
+from model.model_token import TokenData
 from model.transaction import TransactionData, TransactionDataShow, TransactionFilter
 
 from config.config import trx_collection
+from service.service_auth import get_current_user
 
 from util.util_datetime import datetime_jakarta
 import uuid
@@ -16,7 +19,7 @@ logger = logging.getLogger(__name__)
 router_transaction = APIRouter()
 
 @router_transaction.post("/add",response_model=DefaultResponse)
-async def add_transaction(trx_data:TransactionData):
+async def add_transaction(trx_data:TransactionData, current_user:TokenData = Depends(get_current_user)):
     request_time = datetime_jakarta()
     trx_data.requestTime = request_time
     trx_data.trxId = str(uuid.uuid4())
@@ -33,7 +36,8 @@ async def get_transaction(
     startDate : Optional[str] = None,
     endDate : Optional[str] = None,
     trxType : Optional[trxTypeEnum] = None,
-    trxMethod : Optional[trxMethodEnum] = None):
+    trxMethod : Optional[trxMethodEnum] = None,
+    current_user:TokenData = Depends(get_current_user)):
 
     filter = {}
 

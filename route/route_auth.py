@@ -103,7 +103,21 @@ async def login(data_login:LoginUser):
     access_token = found_user['token']
 
     #Verify token (if expired)
-    verify_token = get_token_data()
+    verify_token = get_token_data(access_token)
+
+    if verify_token == None:
+        return {'needVerify':True}
+    
+    return {
+            "request_time":str(datetime_jakarta()),
+            "status_code":200,
+            "message":"Login success",
+            "content":{
+                "access_token":access_token
+            }
+        }
+
+
 
 
 

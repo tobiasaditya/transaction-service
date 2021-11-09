@@ -33,7 +33,7 @@ def get_token_data(token:str):
         token_data = TokenData(userId = user_id)
         return token_data
     except jwt.ExpiredSignatureError:
-        return {'needVerify':True}
+        return None
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="Invalid token",headers={"WWW-Authenticate": "Bearer"})
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="Could not validate credentials",headers={"WWW-Authenticate": "Bearer"})
