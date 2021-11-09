@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 router_transaction = APIRouter()
 
 @router_transaction.post("/add",response_model=DefaultResponse)
-async def add_transaction(trx_data:TransactionData, current_user:TokenData = Depends(get_current_user)):
+async def add_transaction(trx_data:TransactionData): #, current_user:TokenData = Depends(get_current_user)):
     request_time = datetime_jakarta()
     trx_data.requestTime = request_time
     trx_data.trxId = str(uuid.uuid4())
@@ -36,8 +36,8 @@ async def get_transaction(
     startDate : Optional[str] = None,
     endDate : Optional[str] = None,
     trxType : Optional[trxTypeEnum] = None,
-    trxMethod : Optional[trxMethodEnum] = None,
-    current_user:TokenData = Depends(get_current_user)):
+    trxMethod : Optional[trxMethodEnum] = None):#,
+    #current_user:TokenData = Depends(get_current_user)):
 
     filter = {}
 
