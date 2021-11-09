@@ -7,7 +7,7 @@ class DefaultResponse(BaseModel):
     message:str
 
 class DefaultResponseContent(BaseModel):
-    request_time:str
-    status_code:int
-    message:str
-    content:dict
+    request_time:str = None
+    status_code:int = None
+    message:str = None
+    content:dict  = None
