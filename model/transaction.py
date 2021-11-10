@@ -20,6 +20,7 @@ class TransactionData(BaseModel):
     desc:str
     trxMethod:str
     requestTime:datetime = None
+    userId:str = None
     trxId:str = None
 
 class TransactionFilter(BaseModel):
