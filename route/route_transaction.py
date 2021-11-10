@@ -1,13 +1,12 @@
 from datetime import datetime, timedelta
 from typing import Optional
-from bson.objectid import ObjectId
 from fastapi import APIRouter
 from fastapi.param_functions import Depends
 from enum_model.enum_transaction import trxMethodEnum,trxTypeEnum
 
 from model.model_response import DefaultResponse, DefaultResponseContent
 from model.model_token import TokenData
-from model.transaction import TransactionData, TransactionDataShow, TransactionFilter
+from model.transaction import TransactionData, TransactionDataShow
 
 from config.config import trx_collection
 from service.service_auth import get_current_user
@@ -65,9 +64,7 @@ async def get_transaction(
         status_code = 404
     else:
         all_trx = await trx_collection.find(filter).to_list(n_data)
-        id = []
         for trx in all_trx:
-            id.append(str(trx["_id"]))
             if trx['trxType'] == "PURCHASE":
                 total_purchase+=int(trx['amount'])
             elif trx['trxType'] == "INCOME":
@@ -76,7 +73,6 @@ async def get_transaction(
 
         status_code = 200
     
-    print(id)
     data = TransactionDataShow(content = all_trx)
     data.n_data = n_data
     data.total_income = total_income
