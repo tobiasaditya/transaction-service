@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from starlette.responses import JSONResponse
 from model.model_otp import OtpBase
 from model.model_response import DefaultResponseContent
 from model.model_token import TokenData
@@ -22,11 +23,12 @@ async def register(data_register:RegisterUserInput):
     found_duplicate = await user_collection.find_one({"phoneNumber":data_register.phoneNumber})
 
     if found_duplicate:
-       return {
-        "request_time":str(datetime_jakarta()),
-        "status_code":400,
-        "message":"Phone number has been used"}
-    
+        response = {
+            "request_time":str(datetime_jakarta()),
+            "status_code":400,
+            "message":"Phone number has been used"}
+        return JSONResponse(status_code=400,content=response)
+
     #Generate an OTP 6 digit value
     otp = OtpBase()
     otp.otpValue = str(random.randint(100000,999999))
@@ -56,11 +58,12 @@ async def verify(data_verify:VerifyUser):
     })
 
     if not found_otp:
-        return {
+        response = {
             "request_time":str(datetime_jakarta()),
-            "status_code":404,
+            "status_code":400,
             "message":"OTP invalid"
-        }
+        } 
+        return JSONResponse(status_code=400,content=response) 
     
     #If data OTP oke
     data_user = DataUserDb.parse_obj(data_verify)
@@ -94,11 +97,12 @@ async def login(data_login:LoginUser):
     found_user = await user_collection.find_one({"phoneNumber":data_login.phoneNumber})
 
     if not found_user:
-        return {
+        response = {
             "request_time":str(datetime_jakarta()),
-            "status_code":404,
-            "message":"User not found"
+            "status_code":401,
+            "message":"Username/password invalid"
         }
+        return JSONResponse(status_code=401,content=response)
     
     access_token = found_user['token']
 
