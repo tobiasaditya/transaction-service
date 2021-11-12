@@ -96,8 +96,10 @@ async def verify(data_verify:VerifyUser):
 
 @router_auth.post("/login")
 async def login(data_login:LoginUser):
-    found_user = await user_collection.find_one({"phoneNumber":data_login.username})
-    
+    found_user = await user_collection.find_one({
+        "phoneNumber":data_login.username,
+        "password":data_login.password})
+
     if not found_user:
         response = {
             "request_time":str(datetime_jakarta()),

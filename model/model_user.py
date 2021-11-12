@@ -5,6 +5,7 @@ class RegisterUserInput(BaseModel):
     fullName:str
     email:str
     phoneNumber:str
+    password:str
 
 class VerifyUser(RegisterUserInput):
     otpValue:str = None
