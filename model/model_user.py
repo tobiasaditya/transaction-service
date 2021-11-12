@@ -15,4 +15,5 @@ class DataUserDb(RegisterUserInput):
     createTime:datetime = None
 
 class LoginUser(BaseModel):
-    phoneNumber:str
+    username:str
+    password:str

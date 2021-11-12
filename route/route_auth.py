@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi.param_functions import Depends
 from starlette.responses import JSONResponse
 from model.model_otp import OtpBase
 from model.model_response import DefaultResponseContent
@@ -6,6 +7,7 @@ from model.model_token import TokenData
 
 from model.model_user import DataUserDb, LoginUser, RegisterUserInput, VerifyUser
 from config.config import user_collection, otp_collection
+from service.service_auth import get_current_user
 from service.service_email import email
 from service.service_jwt_token import create_access_token, get_token_data
 from util.util_datetime import datetime_jakarta
@@ -94,8 +96,8 @@ async def verify(data_verify:VerifyUser):
 
 @router_auth.post("/login")
 async def login(data_login:LoginUser):
-    found_user = await user_collection.find_one({"phoneNumber":data_login.phoneNumber})
-
+    found_user = await user_collection.find_one({"phoneNumber":data_login.username})
+    
     if not found_user:
         response = {
             "request_time":str(datetime_jakarta()),
@@ -104,23 +106,27 @@ async def login(data_login:LoginUser):
         }
         return JSONResponse(status_code=401,content=response)
     
-    access_token = found_user['token']
+    data_token = TokenData(userId = str(found_user["_id"]))
+    created_token = create_access_token(data_token.dict())
+    logger.debug(f"Token | {created_token}")
+    logger.debug(f"Try decode | {get_token_data(created_token)}")
 
-    #Verify token (if expired)
-    verify_token = get_token_data(access_token)
-
-    if verify_token == None:
-        return {'needVerify':True}
+    await user_collection.update_one({
+        "_id":ObjectId(found_user["_id"])
+        },{
+            "$set":{
+                "token":created_token
+            }
+        })
     
     return {
             "request_time":str(datetime_jakarta()),
             "status_code":200,
             "message":"Login success",
             "content":{
-                "access_token":access_token
+                "access_token":created_token
             }
         }
-
 
 
 

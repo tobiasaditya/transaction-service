@@ -17,7 +17,7 @@ def create_access_token(data:dict, expires_delta: Optional[timedelta] = None):
         expire = datetime.utcnow() + expires_delta
     #If timedelta not defined, default 15 menit expiry time token
     else:
-        expire = datetime.utcnow() + timedelta(days=30)
+        expire = datetime.utcnow() + timedelta(minutes=5)
     to_encode.update({'exp':expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -33,7 +33,6 @@ def get_token_data(token:str):
         token_data = TokenData(userId = user_id)
         return token_data
     except jwt.ExpiredSignatureError:
-        return None
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="Invalid token",headers={"WWW-Authenticate": "Bearer"})
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="Could not validate credentials",headers={"WWW-Authenticate": "Bearer"})
