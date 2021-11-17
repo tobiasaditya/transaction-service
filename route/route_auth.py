@@ -49,6 +49,40 @@ async def register(data_register:RegisterUserInput):
         "message":"OTP send to email",
         "content":content}
     
+@router_auth.post("/resend/{otpId}",response_model=DefaultResponseContent)
+async def resend_otp(otpId:str,data_register:RegisterUserInput):
+    found_otp = await otp_collection.find_one(
+        {
+            "_id":ObjectId(otpId),
+            "otpReceiver":data_register.email,
+        }
+    )
+
+    if not found_otp or datetime.now() < found_otp['otpExpired']:
+        response = {
+            "request_time":str(datetime_jakarta()),
+            "status_code":400,
+            "message":"Invalid OTP"}
+        return JSONResponse(status_code=400,content=response)
+
+    #Generate an OTP 6 digit value
+    otp = OtpBase()
+    otp.otpValue = str(random.randint(100000,999999))
+    otp.otpExpired = datetime.now()+timedelta(minutes=2)
+    otp.otpReceiver = data_register.email
+
+    inserted_otp = await otp_collection.insert_one(otp.dict())
+    content = {
+        "otpId":str(inserted_otp.inserted_id)
+    }
+    email(data_register.email,otp.otpValue)
+
+    return {
+        "request_time":str(datetime_jakarta()),
+        "status_code":200,
+        "message":"OTP send to email",
+        "content":content}
+    
 @router_auth.post("/verify",response_model=DefaultResponseContent)
 async def verify(data_verify:VerifyUser):
     #Cari OTP
