@@ -93,14 +93,14 @@ async def verify(data_verify:VerifyUser):
         "otpVerifed":False
     })
 
-    if not found_otp:
+    if not found_otp or datetime.now() > found_otp['otpExpired']:
         response = {
             "request_time":str(datetime_jakarta()),
             "status_code":400,
             "message":"OTP invalid"
         } 
         return JSONResponse(status_code=400,content=response) 
-    
+
     #If data OTP oke
     data_user = DataUserDb.parse_obj(data_verify)
     data_user.createTime = datetime_jakarta()
