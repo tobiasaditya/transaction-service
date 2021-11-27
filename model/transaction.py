@@ -38,4 +38,5 @@ class TransactionDataShow(BaseModel):
     total_purchase : int = None
     total_income  : int = None
     total_net : int = None
+    total_investment : int = None
     content :List[TransactionDataDb] = []

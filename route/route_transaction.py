@@ -48,6 +48,16 @@ async def get_transaction(
             "$gte": startDate,
             "$lt": endDate+timedelta(days=1)
         }
+    elif not startDate or not endDate:
+        currentTime = datetime_jakarta()
+        currentMonth = currentTime.month
+        currentYear = currentTime.year
+        startDate = datetime(currentYear,currentMonth,1)
+        endDate = currentTime
+        filter['requestTime'] = {
+            "$gte": startDate,
+            "$lt": endDate+timedelta(days=1)
+        }
 
     if trxType and trxType != trxTypeEnum.ALL:
         filter['trxType'] = trxType
@@ -59,6 +69,7 @@ async def get_transaction(
     n_data = await trx_collection.count_documents(filter)
     total_income = 0
     total_purchase = 0
+    total_investment = 0
     if n_data ==0:
         all_trx = []
         status_code = 404
@@ -69,6 +80,8 @@ async def get_transaction(
                 total_purchase+=int(trx['amount'])
             elif trx['trxType'] == "INCOME":
                 total_income+=int(trx['amount'])
+            elif trx['trxType'] == "INVESTMENT":
+                total_investment+=int(trx['amount'])
 
 
         status_code = 200
@@ -78,6 +91,7 @@ async def get_transaction(
     data.total_income = total_income
     data.total_purchase = total_purchase
     data.total_net = total_income - total_purchase
+    data.total_investment = total_investment
 
     return {
         "request_time":str(datetime_jakarta()),

@@ -16,3 +16,4 @@ class trxTypeEnum(str,Enum):
     ALL = "ALL"
     PURCHASE = "PURCHASE"
     INCOME = "INCOME"
+    INVESTMENT = "INVESTMENT"
