@@ -8,6 +8,9 @@ logger = logging.getLogger(__name__)
 
 
 app = FastAPI()
-
+@app.get("/ping")
+async def ping():
+    return{'pong'}
+    
 app.include_router(router_transaction,tags=['Transaction End Point'],prefix="/transaction")
 app.include_router(router_auth,tags=["Authorize"],prefix="/auth")
