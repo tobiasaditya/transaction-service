@@ -6,7 +6,7 @@ from enum_model.enum_transaction import trxMethodEnum,trxTypeEnum
 
 from model.model_response import DefaultResponse, DefaultResponseContent
 from model.model_token import TokenData
-from model.transaction import TransactionData, TransactionDataShow
+from model.transaction import TransactionData, TransactionDataFinanceShow, TransactionDataInvestShow
 
 from config.config import trx_collection
 from service.service_auth import get_current_user
@@ -31,15 +31,19 @@ async def add_transaction(trx_data:TransactionData , current_user:TokenData = De
         "status_code":200,
         "message":"Success added transaction"}
 
-@router_transaction.get("/get",response_model=DefaultResponseContent)
-async def get_transaction(
+@router_transaction.get("/finance",response_model=DefaultResponseContent)
+async def get_transaction_finance(
     startDate : Optional[str] = None,
     endDate : Optional[str] = None,
     trxType : Optional[trxTypeEnum] = None,
     trxMethod : Optional[trxMethodEnum] = None,
     current_user:TokenData = Depends(get_current_user)):
 
-    filter = {"userId":current_user.userId}
+    filter = {
+        "userId":current_user.userId,
+        "trxType":{"$ne":{trxTypeEnum.INVESTMENT}}
+        }
+
 
     if startDate and endDate:
         startDate = datetime.strptime(startDate,"%d/%m/%Y")
@@ -69,7 +73,6 @@ async def get_transaction(
     n_data = await trx_collection.count_documents(filter)
     total_income = 0
     total_purchase = 0
-    total_investment = 0
     if n_data ==0:
         all_trx = []
         status_code = 404
@@ -80,17 +83,44 @@ async def get_transaction(
                 total_purchase+=int(trx['amount'])
             elif trx['trxType'] == "INCOME":
                 total_income+=int(trx['amount'])
-            elif trx['trxType'] == "INVESTMENT":
-                total_investment+=int(trx['amount'])
-
 
         status_code = 200
     
-    data = TransactionDataShow(content = all_trx)
+    data = TransactionDataFinanceShow(content = all_trx)
     data.n_data = n_data
     data.total_income = total_income
     data.total_purchase = total_purchase
     data.total_net = total_income - total_purchase
+
+    return {
+        "request_time":str(datetime_jakarta()),
+        "status_code":status_code,
+        "message":"Success get transaction data",
+        "content":data.dict()
+    }
+
+
+@router_transaction.get("/investment",response_model=DefaultResponseContent)
+async def get_transaction_finance(current_user:TokenData = Depends(get_current_user)):
+    filter = {
+        "trxType":trxTypeEnum.INVESTMENT
+    }
+
+    n_data = await trx_collection.count_documents(filter)
+    total_investment = 0
+    if n_data ==0:
+        all_trx = []
+        status_code = 404
+    else:
+        all_trx = await trx_collection.find(filter).to_list(n_data)
+        for trx in all_trx:
+            total_investment+=int(trx['amount'])
+
+
+        status_code = 200
+    
+    data = TransactionDataInvestShow(content = all_trx)
+    data.n_data = n_data
     data.total_investment = total_investment
 
     return {

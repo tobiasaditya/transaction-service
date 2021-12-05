@@ -33,10 +33,14 @@ class TransactionDataDb(TransactionData):
     id:ObjectStr = Field(... , alias="_id")
     requestTime : ObjectStr = None
 
-class TransactionDataShow(BaseModel):
+class TransactionDataShowBase(BaseModel):
     n_data : int = None
+    content :List[TransactionDataDb] = []
+
+class TransactionDataFinanceShow(TransactionDataShowBase):
     total_purchase : int = None
     total_income  : int = None
     total_net : int = None
+    
+class TransactionDataInvestShow(TransactionDataShowBase):
     total_investment : int = None
-    content :List[TransactionDataDb] = []
