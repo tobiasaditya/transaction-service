@@ -41,7 +41,7 @@ async def get_transaction_finance(
 
     filter = {
         "userId":current_user.userId,
-        "trxType":{"$ne":{"INVESTMENT"}}
+        "trxType":{"$ne":"INVESTMENT"}
         }
 
 
