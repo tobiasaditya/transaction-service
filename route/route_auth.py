@@ -85,7 +85,7 @@ async def resend_otp(otpId:str,data_register:RegisterUserInput):
     
 @router_auth.post("/verify",response_model=DefaultResponseContent)
 async def verify(data_verify:VerifyUser):
-    #Cari OTP
+    #Cari OTP aja
     found_otp = await otp_collection.find_one({
         "_id":ObjectId(data_verify.otpId),
         "otpValue":data_verify.otpValue,
