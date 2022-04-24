@@ -1,1 +1,1 @@
-database : "mongodb://admin:ayRY8W4Ka9SA9He@cluster0-shard-00-00.8b8cv.mongodb.net:27017,cluster0-shard-00-01.8b8cv.mongodb.net:27017,cluster0-shard-00-02.8b8cv.mongodb.net:27017/Cluster0?ssl=true&replicaSet=atlas-14dzz6-shard-0&authSource=admin&retryWrites=true&w=majority"
+database : "mongodb://<<username>>:<<password>>@<<url_db>>ssl=true&replicaSet=atlas-14dzz6-shard-0&authSource=admin&retryWrites=true&w=majority"
